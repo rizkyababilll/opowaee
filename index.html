@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You ❤️</title>
+  <style>
+    body { margin:0; font-family:'Comic Sans MS', cursive; background: linear-gradient(to bottom,#ffe6f0,#fff); text-align:center; overflow:hidden; }
+    .container { padding:40px; position:relative; z-index:2; display:none; }
+    h1 { color:#ff4da6; font-size:3em; }
+    p { font-size:1.3em; color:#444; max-width:650px; margin:20px auto; min-height:120px; }
+    .character { width:200px; margin-top:20px; animation: float 3s ease-in-out infinite; }
+    @keyframes float {0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+    .btn { margin-top:20px; padding:12px 25px; background:#ff66b2; color:white; border:none; border-radius:20px; cursor:pointer; }
+    .btn:hover { background:#ff3385; }
+    footer { margin-top:30px; font-size:0.9em; color:#888; }
+
+    /* opening */
+    .start-screen { position:fixed; width:100%; height:100%; background:#ff99cc; display:flex; justify-content:center; align-items:center; flex-direction:column; z-index:10; color:white; }
+
+    /* hearts */
+    .heart { position:absolute; top:-10px; color:#ff4da6; animation: fall linear infinite; }
+    @keyframes fall { to{ transform:translateY(100vh);} }
+
+    /* balloons */
+    .balloon { position:absolute; bottom:-100px; font-size:30px; animation: up 6s linear infinite; }
+    @keyframes up { to{ transform:translateY(-110vh);} }
+
+    /* modal hadiah */
+    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:20; }
+    .modal-content { background:white; padding:20px; border-radius:20px; max-width:300px; }
+
+    /* countdown */
+    .countdown { font-size:1.5em; color:#ff4da6; margin-top:10px; }
+  </style>
+</head>
+<body>
+
+<div class="start-screen" onclick="startPage()">
+  <h2>Klik ini ya sayang... aku ada sesuatu buat kamu 💖</h2>
+</div>
+
+<div id="hearts"></div>
+<div id="balloons"></div>
+
+<div class="container" id="mainContent">
+  <h1>Selamat Ulang Tahun <span id="nama"></span> 🎂</h1>
+
+  <div class="countdown" id="countdown"></div>
+
+  <img src="https://i.imgur.com/3ZQ3Z4B.png" class="character">
+
+  <p id="text"></p>
+
+  <button class="btn" onclick="openGift()">Buka Hadiah 🎁</button>
+
+  <audio id="music" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  </audio>
+
+  <footer>Dari aku yang selalu sayang kamu 💕</footer>
+</div>
+
+<!-- MODAL HADIAH -->
+<div class="modal" id="giftModal" onclick="closeGift()">
+  <div class="modal-content">
+    <h3>Aku cuma punya ini buat kamu 💖</h3>
+    <p>Terima kasih sudah hadir di hidup aku. Kamu alasan aku bahagia setiap hari.</p>
+  </div>
+</div>
+
+<script>
+  function startPage(){
+    document.querySelector('.start-screen').style.display='none';
+    document.getElementById('mainContent').style.display='block';
+    playMusic();
+    typeText();
+  }
+
+  function playMusic(){
+    const music=document.getElementById('music');
+    music.volume=0.7;
+    music.play();
+  }
+
+  // typing effect
+  const message = `Hai cintaku ❤️...\n\nDi hari ulang tahun kamu ini, aku cuma mau bilang...\naku bersyukur banget bisa kenal kamu.\n\nKamu itu bukan cuma pacar aku...\ntapi rumah buat hati aku.\n\nMaaf ya kalau aku belum sempurna,\ntapi aku selalu berusaha jadi yang terbaik buat kamu.\n\nAku sayang kamu... lebih dari yang bisa aku jelasin 💖`;
+
+  let i=0;
+  function typeText(){
+    if(i<message.length){
+      document.getElementById('text').innerHTML += message.charAt(i);
+      i++;
+      setTimeout(typeText,40);
+    }
+  }
+
+  // hearts
+  function createHeart(){
+    const h=document.createElement('div');
+    h.classList.add('heart');
+    h.innerHTML='❤️';
+    h.style.left=Math.random()*100+'vw';
+    h.style.animationDuration=(Math.random()*3+2)+'s';
+    document.getElementById('hearts').appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  }
+  setInterval(createHeart,300);
+
+  // balloons
+  function createBalloon(){
+    const b=document.createElement('div');
+    b.classList.add('balloon');
+    b.innerHTML='🎈';
+    b.style.left=Math.random()*100+'vw';
+    b.style.animationDuration=(Math.random()*4+4)+'s';
+    document.getElementById('balloons').appendChild(b);
+    setTimeout(()=>b.remove(),8000);
+  }
+  setInterval(createBalloon,800);
+
+  // click love
+  document.addEventListener('click', function(e){
+    const love=document.createElement('div');
+    love.innerHTML='💖';
+    love.style.position='absolute';
+    love.style.left=e.pageX+'px';
+    love.style.top=e.pageY+'px';
+    document.body.appendChild(love);
+    setTimeout(()=>love.remove(),1000);
+  });
+
+  // gift
+  function openGift(){ document.getElementById('giftModal').style.display='flex'; }
+  function closeGift(){ document.getElementById('giftModal').style.display='none'; }
+
+  // countdown sederhana (edit tanggal)
+  const target = new Date();
+  target.setHours(target.getHours()+1);
+  setInterval(()=>{
+    const now=new Date();
+    const diff=target-now;
+    const m=Math.floor(diff/60000);
+    const s=Math.floor((diff%60000)/1000);
+    document.getElementById('countdown').innerText = `Waktu spesial kita: ${m}m ${s}s`;
+  },1000);
+
+  // nama
+  document.getElementById('nama').innerText = 'Nama Pacar Kamu 💕';
+</script>
+
+</body>
+</html>
